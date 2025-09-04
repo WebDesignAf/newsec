@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خبرگزاری آنلاین افغانستان</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Vazirmatn', sans-serif;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .news-card {
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 30%, #ffffff 70%, #f1f5f9 100%);
+            border: 1px solid rgba(59, 130, 246, 0.08);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .news-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.15), rgba(139, 92, 246, 0.1), transparent);
+            transition: left 0.8s ease;
+        }
+        
+        .news-card:hover::before {
+            left: 100%;
+        }
+        
+        .news-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #7c3aed, #8b5cf6, #a78bfa);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        
+        .news-card:hover::after {
+            transform: scaleX(1);
+        }
+        
+        .news-card:hover {
+            transform: translateY(-16px) scale(1.02) rotateX(2deg);
+            box-shadow: 
+                0 32px 64px rgba(124, 58, 237, 0.25), 
+                0 16px 32px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(124, 58, 237, 0.1);
+            border-color: rgba(124, 58, 237, 0.2);
+        }
+        
+        .admin-panel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.95), rgba(241, 245, 249, 0.98));
+            backdrop-filter: blur(25px);
+            border-radius: 24px;
+            box-shadow: 
+                0 25px 80px rgba(0, 0, 0, 0.12), 
+                0 8px 32px rgba(59, 130, 246, 0.15),
+                0 0 0 1px rgba(59, 130, 246, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            transform: translateY(-10px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .admin-panel:hover {
+            transform: translateY(-18px) scale(1.02);
+            box-shadow: 
+                0 35px 100px rgba(0, 0, 0, 0.18), 
+                0 12px 40px rgba(59, 130, 246, 0.25),
+                0 0 0 1px rgba(59, 130, 246, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+        
+        .floating-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9, #5b21b6);
+            box-shadow: 0 15px 35px rgba(124, 58, 237, 0.4), 0 5px 15px rgba(0, 0, 0, 0.1);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+        
+        .modal {
+            backdrop-filter: blur(8px);
+        }
+        
+        .category-btn.active {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: white;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        }
+        
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .hero-section {
+            background: linear-gradient(145deg, #1e1b4b 0%, #312e81 25%, #7c3aed 50%, #8b5cf6 75%, #a78bfa 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.05"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.05"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.03"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        }
+        
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.02) 50%, transparent 70%);
+            animation: shimmer 8s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+        
+        .news-image {
+            transition: transform 0.4s ease;
+        }
+        
+        .news-card:hover .news-image {
+            transform: scale(1.1);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Breaking News Ticker */
+        .breaking-news {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+        }
+        
+        .breaking-news-content {
+            display: inline-block;
+            animation: scroll-right 60s linear infinite;
+            padding-left: 100%;
+        }
+        
+        @keyframes scroll-right {
+            0% {
+                transform: translate3d(100%, 0, 0);
+            }
+            100% {
+                transform: translate3d(-100%, 0, 0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .admin-panel {
+                top: 10px;
+                left: 10px;
+                right: 10px;
+                width: auto;
+            }
+            
+            .floating-btn {
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .news-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        /* Protection Styles */
+        body {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .protection-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a;
+            color: #fff;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            z-index: 999999;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body>
+    <!-- Protection Overlay -->
+    <div id="protectionOverlay" class="protection-overlay">
+        <div style="text-align: center; padding: 40px;">
+            <h1 style="font-size: 48px; margin-bottom: 20px; color: #ff4444;">⚠️</h1>
+            <h2 style="font-size: 24px; margin-bottom: 20px;">دسترسی محدود شده</h2>
+            <p style="font-size: 16px; margin-bottom: 30px;">کد منبع این وب‌سایت محافظت شده است</p>
+            <p style="font-size: 14px; color: #888;">لطفاً ابزارهای توسعه‌دهنده را ببندید</p>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="admin-panel p-5 w-80 hidden">
+        <div id="adminLogin" class="space-y-4">
+            <h3 class="text-lg font-semibold gradient-text mb-4">ورود مدیر</h3>
+            <input type="text" id="adminUsername" placeholder="نام کاربری" class="w-full p-3 border border-purple-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+            <input type="password" id="adminPassword" placeholder="رمز عبور" class="w-full p-3 border border-purple-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+            <button onclick="adminLogin()" class="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white p-3 rounded-xl hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg">ورود</button>
+        </div>
+        
+        <div id="adminControls" class="hidden space-y-3">
+            <h3 class="text-lg font-semibold gradient-text mb-4">پنل مدیریت</h3>
+            <button onclick="showAddNewsModal()" class="w-full bg-gradient-to-r from-green-600 to-green-700 text-white p-3 rounded-xl hover:from-green-700 hover:to-green-800 transition-all text-sm shadow-lg">افزودن خبر جدید</button>
+            <button onclick="toggleEditMode()" class="w-full bg-gradient-to-r from-yellow-600 to-yellow-700 text-white p-3 rounded-xl hover:from-yellow-700 hover:to-yellow-800 transition-all text-sm shadow-lg">حالت ویرایش</button>
+            <button onclick="showBreakingNewsModal()" class="w-full bg-gradient-to-r from-red-600 to-red-700 text-white p-3 rounded-xl hover:from-red-700 hover:to-red-800 transition-all text-sm shadow-lg">خبر فوری</button>
+            <button onclick="showCustomizationModal()" class="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white p-3 rounded-xl hover:from-purple-700 hover:to-purple-800 transition-all text-sm shadow-lg">شخصی‌سازی سایت</button>
+            <button onclick="adminLogout()" class="w-full bg-gradient-to-r from-gray-600 to-gray-700 text-white p-3 rounded-xl hover:from-gray-700 hover:to-gray-800 transition-all text-sm shadow-lg">خروج</button>
+        </div>
+    </div>
+
+    <!-- Admin Button -->
+    <button onclick="toggleAdminPanel()" class="fixed bottom-4 left-4 w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-full transition-all duration-300 z-50 shadow-lg hover:shadow-xl flex items-center justify-center text-lg font-bold" title="پنل مدیریت">؟</button>
+
+    <!-- Breaking News Ticker -->
+    <div id="breakingNewsBar" class="breaking-news text-white py-3 hidden">
+        <div class="container mx-auto px-4 flex items-center">
+            <span class="bg-white text-red-600 px-4 py-1 rounded-full text-sm font-bold ml-4 flex-shrink-0">خبر فوری</span>
+            <div class="breaking-news-content text-lg font-medium" id="breakingNewsText">
+                <!-- Breaking news content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="hero-section relative">
+        <div class="container mx-auto px-4 py-6 relative z-10">
+            <!-- Logo Area -->
+            <div class="absolute top-6 right-6 z-20">
+                <div id="logoContainer" class="hidden">
+                    <img id="siteLogo" src="" alt="لوگو سایت" class="w-24 h-24 object-contain drop-shadow-2xl">
+                </div>
+            </div>
+            
+            <div class="text-center mb-6">
+                <h1 id="siteTitle" class="text-4xl font-bold text-white mb-3 drop-shadow-lg">خبرگزاری آنلاین افغانستان</h1>
+                <p id="siteSubtitle" class="text-blue-100 text-lg">منبع معتبر اخبار روز کشور</p>
+            </div>
+            
+            <!-- Main Navigation -->
+            <nav class="flex flex-wrap justify-center gap-6 mb-6">
+                <a href="#" onclick="showPage('home')" class="text-white hover:text-blue-200 transition-colors px-6 py-3 rounded-full hover:bg-white hover:bg-opacity-20 font-medium border border-white border-opacity-30">خانه</a>
+                <a href="#" onclick="showPage('about')" class="text-white hover:text-blue-200 transition-colors px-6 py-3 rounded-full hover:bg-white hover:bg-opacity-20 font-medium border border-white border-opacity-30">درباره ما</a>
+                <a href="#" onclick="showPage('contact')" class="text-white hover:text-blue-200 transition-colors px-6 py-3 rounded-full hover:bg-white hover:bg-opacity-20 font-medium border border-white border-opacity-30">تماس با ما</a>
+            </nav>
+            
+            <!-- Search Box -->
+            <div class="flex justify-center mb-6">
+                <div class="relative w-full max-w-md">
+                    <input type="text" id="searchInput" placeholder="جستجو در اخبار..." class="w-full p-4 pr-12 bg-white bg-opacity-20 backdrop-blur-sm border border-white border-opacity-30 rounded-2xl text-white placeholder-blue-100 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all">
+                    <svg class="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-blue-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-12">
+        <!-- Category Filters -->
+        <div class="flex flex-wrap justify-center gap-4 mb-12">
+            <button onclick="showCategory('all')" class="category-btn active px-8 py-3 rounded-full border-2 border-purple-200 hover:bg-purple-50 transition-all font-medium shadow-lg">همه اخبار</button>
+            <button onclick="showCategory('political')" class="category-btn px-8 py-3 rounded-full border-2 border-purple-200 hover:bg-purple-50 transition-all font-medium shadow-lg">سیاسی</button>
+            <button onclick="showCategory('economic')" class="category-btn px-8 py-3 rounded-full border-2 border-purple-200 hover:bg-purple-50 transition-all font-medium shadow-lg">اقتصادی</button>
+            <button onclick="showCategory('sports')" class="category-btn px-8 py-3 rounded-full border-2 border-purple-200 hover:bg-purple-50 transition-all font-medium shadow-lg">ورزشی</button>
+            <button onclick="showCategory('social')" class="category-btn px-8 py-3 rounded-full border-2 border-purple-200 hover:bg-purple-50 transition-all font-medium shadow-lg">اجتماعی</button>
+            <button onclick="showCategory('multimedia')" class="category-btn px-8 py-3 rounded-full border-2 border-purple-200 hover:bg-purple-50 transition-all font-medium shadow-lg">چند رسانه‌ای</button>
+        </div>
+
+        <!-- News Grid -->
+        <div id="newsContainer" class="news-grid">
+            <!-- News items will be populated here -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="text-center py-16">
+            <div class="max-w-md mx-auto">
+                <svg class="w-24 h-24 mx-auto text-gray-300 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                </svg>
+                <h3 class="text-xl font-semibold text-gray-600 mb-3">هنوز خبری منتشر نشده است</h3>
+                <p class="text-gray-500">اولین خبر را از طریق پنل مدیریت اضافه کنید</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-gray-800 to-gray-900 text-white py-16 mt-24">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <h3 class="text-2xl font-bold mb-4 gradient-text">خبرگزاری آنلاین افغانستان</h3>
+                    <p class="text-gray-300 leading-relaxed mb-6">
+                        منبع معتبر و به‌روز اخبار سیاسی، اقتصادی، ورزشی و اجتماعی افغانستان. ما متعهد به ارائه اخبار دقیق و بی‌طرفانه هستیم.
+                    </p>
+                    <div class="flex gap-4">
+                        <!-- Facebook -->
+                        <a href="" class="bg-blue-600 p-3 rounded-full hover:bg-blue-700 transition-colors" title="فیسبوک">
+                            <!-- لینک صفحه فیسبوک خود را اینجا وارد کنید -->
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                        
+                        <!-- Twitter -->
+                        <a href="" class="bg-blue-400 p-3 rounded-full hover:bg-blue-500 transition-colors" title="توییتر">
+                            <!-- لینک پروفایل توییتر خود را اینجا وارد کنید -->
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                            </svg>
+                        </a>
+                        
+                        <!-- Instagram -->
+                        <a href="" class="bg-pink-600 p-3 rounded-full hover:bg-pink-700 transition-colors" title="اینستاگرام">
+                            <!-- لینک پروفایل اینستاگرام خود را اینجا وارد کنید -->
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                        
+                        <!-- Telegram -->
+                        <a href="" class="bg-blue-500 p-3 rounded-full hover:bg-blue-600 transition-colors" title="تلگرام">
+                            <!-- لینک کانال تلگرام خود را اینجا وارد کنید -->
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                            </svg>
+                        </a>
+                        
+                        <!-- YouTube -->
+                        <a href="" class="bg-red-600 p-3 rounded-full hover:bg-red-700 transition-colors" title="یوتیوب">
+                            <!-- لینک کانال یوتیوب خود را اینجا وارد کنید -->
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">دسته‌بندی‌ها</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="#" onclick="showCategory('political')" class="hover:text-white transition-colors">اخبار سیاسی</a></li>
+                        <li><a href="#" onclick="showCategory('economic')" class="hover:text-white transition-colors">اخبار اقتصادی</a></li>
+                        <li><a href="#" onclick="showCategory('sports')" class="hover:text-white transition-colors">اخبار ورزشی</a></li>
+                        <li><a href="#" onclick="showCategory('social')" class="hover:text-white transition-colors">اخبار اجتماعی</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">تماس با ما</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li>تلفن: ۰۹۳-۱۲۳۴۵۶۷۸</li>
+                        <li>ایمیل: info@afghanews.af</li>
+                        <li>آدرس: کابل، افغانستان</li>
+                        <li>کد پستی: ۱۰۰۱</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; ۱۴۰۳ خبرگزاری آنلاین افغانستان. تمامی حقوق محفوظ است.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Add/Edit News Modal -->
+    <div id="newsModal" class="fixed inset-0 bg-black bg-opacity-50 modal hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 w-full max-w-3xl mx-4 max-h-screen overflow-y-auto shadow-2xl">
+            <h2 id="modalTitle" class="text-3xl font-bold gradient-text mb-8">افزودن خبر جدید</h2>
+            
+            <form id="newsForm" class="space-y-6">
+                <input type="hidden" id="newsId">
+                
+                <div>
+                    <label class="block text-gray-700 font-medium mb-3">عنوان خبر</label>
+                    <input type="text" id="newsTitle" required class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 font-medium mb-3">دسته‌بندی</label>
+                    <select id="newsCategory" required class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                        <option value="political">سیاسی</option>
+                        <option value="economic">اقتصادی</option>
+                        <option value="sports">ورزشی</option>
+                        <option value="social">اجتماعی</option>
+                        <option value="multimedia">چند رسانه‌ای</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 font-medium mb-3">رسانه خبر</label>
+                    <div class="space-y-4">
+                        <div class="flex gap-3 flex-wrap">
+                            <button type="button" onclick="toggleMediaUpload('image')" id="imageUploadBtn" class="px-6 py-3 bg-blue-100 text-blue-700 rounded-xl hover:bg-blue-200 transition-all font-medium">تصویر</button>
+                            <button type="button" onclick="toggleMediaUpload('video')" id="videoUploadBtn" class="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-medium">ویدیو</button>
+                            <button type="button" onclick="toggleMediaUpload('audio')" id="audioUploadBtn" class="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-medium">صوت</button>
+                            <button type="button" onclick="toggleMediaUpload('url')" id="urlUploadBtn" class="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-medium">لینک</button>
+                        </div>
+                        
+                        <div id="imageUploadSection" class="hidden">
+                            <input type="file" id="newsImageFile" accept="image/*" class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                        </div>
+                        
+                        <div id="videoUploadSection" class="hidden">
+                            <input type="file" id="newsVideoFile" accept="video/*" class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                        </div>
+                        
+                        <div id="audioUploadSection" class="hidden">
+                            <input type="file" id="newsAudioFile" accept="audio/*" class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                        </div>
+                        
+                        <div id="urlUploadSection" class="hidden">
+                            <input type="url" id="newsMediaUrl" placeholder="https://example.com/media.jpg" class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                        </div>
+                        
+                        <div id="mediaPreview" class="hidden">
+                            <img id="previewImg" src="" alt="پیش‌نمایش تصویر" class="w-full max-w-sm h-48 object-cover rounded-xl border shadow-lg hidden">
+                            <video id="previewVideo" controls class="w-full max-w-sm h-48 rounded-xl border shadow-lg hidden"></video>
+                            <audio id="previewAudio" controls class="w-full rounded-xl border shadow-lg hidden"></audio>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 font-medium mb-3">خلاصه خبر</label>
+                    <textarea id="newsSummary" required rows="3" class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 font-medium mb-3">متن کامل خبر</label>
+                    <textarea id="newsContent" required rows="8" class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"></textarea>
+                </div>
+                
+                <div class="flex gap-4 pt-6">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium shadow-lg">ذخیره خبر</button>
+                    <button type="button" onclick="closeNewsModal()" class="flex-1 bg-gradient-to-r from-gray-500 to-gray-600 text-white p-4 rounded-xl hover:from-gray-600 hover:to-gray-700 transition-all font-medium shadow-lg">انصراف</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Breaking News Modal -->
+    <div id="breakingNewsModal" class="fixed inset-0 bg-black bg-opacity-50 modal hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 w-full max-w-2xl mx-4 shadow-2xl">
+            <h2 class="text-3xl font-bold gradient-text mb-8">خبر فوری</h2>
+            
+            <form id="breakingNewsForm" class="space-y-6">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-3">متن خبر فوری</label>
+                    <textarea id="breakingNewsInput" required rows="3" placeholder="متن خبر فوری را وارد کنید..." class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 transition-all"></textarea>
+                </div>
+                
+                <div class="flex gap-4 pt-6">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-red-600 to-red-700 text-white p-4 rounded-xl hover:from-red-700 hover:to-red-800 transition-all font-medium shadow-lg">نمایش خبر فوری</button>
+                    <button type="button" onclick="hideBreakingNews()" class="flex-1 bg-gradient-to-r from-gray-500 to-gray-600 text-white p-4 rounded-xl hover:from-gray-600 hover:to-gray-700 transition-all font-medium shadow-lg">مخفی کردن</button>
+                    <button type="button" onclick="closeBreakingNewsModal()" class="flex-1 bg-gradient-to-r from-gray-500 to-gray-600 text-white p-4 rounded-xl hover:from-gray-600 hover:to-gray-700 transition-all font-medium shadow-lg">انصراف</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Site Customization Modal -->
+    <div id="customizationModal" class="fixed inset-0 bg-black bg-opacity-50 modal hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 w-full max-w-4xl mx-4 max-h-screen overflow-y-auto shadow-2xl">
+            <h2 class="text-3xl font-bold gradient-text mb-8">شخصی‌سازی سایت</h2>
+            
+            <form id="customizationForm" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-3">عنوان سایت</label>
+                        <input type="text" id="siteTitleInput" class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-3">زیرعنوان سایت</label>
+                        <input type="text" id="siteSubtitleInput" class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 font-medium mb-3">لوگوی سایت</label>
+                    <div class="space-y-4">
+                        <div class="flex gap-3">
+                            <button type="button" onclick="toggleLogoUpload('file')" id="logoFileBtn" class="px-6 py-3 bg-purple-100 text-purple-700 rounded-xl hover:bg-purple-200 transition-all font-medium">آپلود فایل</button>
+                            <button type="button" onclick="toggleLogoUpload('url')" id="logoUrlBtn" class="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-medium">لینک لوگو</button>
+                        </div>
+                        
+                        <div id="logoFileSection" class="hidden">
+                            <input type="file" id="logoFile" accept="image/*" class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+                        </div>
+                        
+                        <div id="logoUrlSection" class="hidden">
+                            <input type="url" id="logoUrl" placeholder="https://example.com/logo.png" class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+                        </div>
+                        
+                        <div id="logoPreview" class="hidden">
+                            <img id="previewLogo" src="" alt="پیش‌نمایش لوگو" class="w-24 h-24 object-contain rounded-xl border shadow-lg">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-3">شماره تماس</label>
+                        <input type="text" id="contactPhone" class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-3">ایمیل</label>
+                        <input type="email" id="contactEmail" class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-3">آدرس</label>
+                        <input type="text" id="contactAddress" class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+                    </div>
+                </div>
+                
+                <div class="flex gap-4 pt-6">
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white p-4 rounded-xl hover:from-purple-700 hover:to-purple-800 transition-all font-medium shadow-lg">ذخیره تغییرات</button>
+                    <button type="button" onclick="closeCustomizationModal()" class="flex-1 bg-gradient-to-r from-gray-500 to-gray-600 text-white p-4 rounded-xl hover:from-gray-600 hover:to-gray-700 transition-all font-medium shadow-lg">انصراف</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- News Detail Modal -->
+    <div id="newsDetailModal" class="fixed inset-0 bg-black bg-opacity-50 modal hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 w-full max-w-5xl mx-4 max-h-screen overflow-y-auto shadow-2xl">
+            <div class="flex justify-between items-start mb-8">
+                <h2 id="detailTitle" class="text-4xl font-bold gradient-text"></h2>
+                <button onclick="closeDetailModal()" class="text-gray-500 hover:text-gray-700 text-3xl transition-colors">&times;</button>
+            </div>
+            
+            <div class="mb-6">
+                <span id="detailCategory" class="inline-block bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 px-4 py-2 rounded-full text-sm font-medium"></span>
+                <span id="detailDate" class="text-gray-500 mr-4 font-medium"></span>
+                <span id="detailViews" class="text-gray-500 mr-4"></span>
+            </div>
+            
+            <div id="detailImageContainer" class="mb-8 hidden">
+                <img id="detailImage" src="" alt="" class="w-full max-h-96 object-cover rounded-2xl shadow-lg">
+            </div>
+            
+            <div id="detailContent" class="prose max-w-none text-gray-700 leading-relaxed text-lg"></div>
+            
+            <div class="mt-12 pt-8 border-t border-gray-200">
+                <h3 class="text-xl font-semibold text-gray-800 mb-6">اشتراک‌گذاری</h3>
+                <div class="flex gap-4">
+                    <button onclick="shareNews('telegram')" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg">تلگرام</button>
+                    <button onclick="shareNews('whatsapp')" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl hover:from-green-600 hover:to-green-700 transition-all shadow-lg">واتساپ</button>
+                    <button onclick="shareNews('twitter')" class="bg-gradient-to-r from-blue-400 to-blue-500 text-white px-6 py-3 rounded-xl hover:from-blue-500 hover:to-blue-600 transition-all shadow-lg">توییتر</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Advanced Code Protection System
+        (function() {
+            'use strict';
+            
+            // Disable right-click context menu
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                showProtectionWarning();
+                return false;
+            });
+            
+            // Disable keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // F12 (Developer Tools)
+                if (e.keyCode === 123) {
+                    e.preventDefault();
+                    showProtectionWarning();
+                    return false;
+                }
+                // Ctrl+Shift+I (Developer Tools)
+                if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+                    e.preventDefault();
+                    showProtectionWarning();
+                    return false;
+                }
+                // Ctrl+Shift+J (Console)
+                if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
+                    e.preventDefault();
+                    showProtectionWarning();
+                    return false;
+                }
+                // Ctrl+U (View Source)
+                if (e.ctrlKey && e.keyCode === 85) {
+                    e.preventDefault();
+                    showProtectionWarning();
+                    return false;
+                }
+                // Ctrl+Shift+C (Element Inspector)
+                if (e.ctrlKey && e.shiftKey && e.keyCode === 67) {
+                    e.preventDefault();
+                    showProtectionWarning();
+                    return false;
+                }
+                // Ctrl+S (Save Page)
+                if (e.ctrlKey && e.keyCode === 83) {
+                    e.preventDefault();
+                    showProtectionWarning();
+                    return false;
+                }
+                // Ctrl+A (Select All)
+                if (e.ctrlKey && e.keyCode === 65) {
+                    e.preventDefault();
+                    return false;
+                }
+                // Ctrl+P (Print)
+                if (e.ctrlKey && e.keyCode === 80) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            
+            // Show protection warning
+            function showProtectionWarning() {
+                const overlay = document.getElementById('protectionOverlay');
+                overlay.style.display = 'flex';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 3000);
+            }
+            
+            // Detect DevTools opening
+            let devtools = {
+                open: false,
+                orientation: null
+            };
+            
+            const threshold = 160;
+            
+            setInterval(function() {
+                if (window.outerHeight - window.innerHeight > threshold || 
+                    window.outerWidth - window.innerWidth > threshold) {
+                    if (!devtools.open) {
+                        devtools.open = true;
+                        showProtectionWarning();
+                        // Optionally redirect or reload
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 3000);
+                    }
+                } else {
+                    devtools.open = false;
+                }
+            }, 500);
+            
+            // Disable text selection
+            document.addEventListener('selectstart', function(e) {
+                e.preventDefault();
+                return false;
+            });
+            
+            // Disable drag
+            document.addEventListener('dragstart', function(e) {
+                e.preventDefault();
+                return false;
+            });
+            
+            // Clear console periodically
+            setInterval(function() {
+                try {
+                    console.clear();
+                } catch(e) {}
+            }, 1000);
+            
+            // Override console methods
+            const noop = function() {};
+            if (typeof console !== 'undefined') {
+                ['log', 'warn', 'error', 'info', 'debug', 'trace', 'dir', 'dirxml', 'table', 'clear'].forEach(method => {
+                    try {
+                        console[method] = noop;
+                    } catch(e) {}
+                });
+            }
+            
+            // Disable print
+            window.addEventListener('beforeprint', function(e) {
+                e.preventDefault();
+                showProtectionWarning();
+                return false;
+            });
+            
+            // Protect against view-source
+            if (window.location.protocol === 'view-source:') {
+                document.body.innerHTML = '<h1 style="text-align:center;margin-top:50px;">محتوا محافظت شده است</h1>';
+            }
+            
+            // Detect if page is being viewed in frame/iframe
+            if (window.top !== window.self) {
+                document.body.innerHTML = '<h1 style="text-align:center;margin-top:50px;">محتوا محافظت شده است</h1>';
+            }
+            
+            // Disable copy paste
+            document.addEventListener('copy', function(e) {
+                e.preventDefault();
+                return false;
+            });
+            
+            document.addEventListener('paste', function(e) {
+                e.preventDefault();
+                return false;
+            });
+            
+            // Disable image saving
+            document.addEventListener('dragstart', function(e) {
+                if (e.target.tagName === 'IMG') {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            
+            // Additional protection methods
+            try {
+                // Redefine console
+                Object.defineProperty(window, 'console', {
+                    get: function() {
+                        return {
+                            log: noop, warn: noop, error: noop, info: noop, 
+                            debug: noop, trace: noop, dir: noop, dirxml: noop,
+                            table: noop, clear: noop
+                        };
+                    },
+                    set: function() {
+                        return false;
+                    }
+                });
+            } catch(e) {}
+            
+            // Disable eval
+            window.eval = function() {
+                throw new Error('eval is disabled');
+            };
+            
+            // Monitor for debugging attempts
+            let start = Date.now();
+            debugger;
+            if (Date.now() - start > 100) {
+                showProtectionWarning();
+            }
+            
+        })();
+
+        // Database simulation using localStorage
+        class NewsDatabase {
+            constructor() {
+                this.storageKey = 'newsDatabase';
+                this.initializeDatabase();
+            }
+            
+            initializeDatabase() {
+                if (!localStorage.getItem(this.storageKey)) {
+                    // Start with empty database - no default news
+                    localStorage.setItem(this.storageKey, JSON.stringify([]));
+                }
+            }
+            
+            getAllNews() {
+                return JSON.parse(localStorage.getItem(this.storageKey) || '[]');
+            }
+            
+            getNewsByCategory(category) {
+                const allNews = this.getAllNews();
+                return category === 'all' ? allNews : allNews.filter(news => news.category === category);
+            }
+            
+            addNews(newsData) {
+                const allNews = this.getAllNews();
+                const newId = Math.max(...allNews.map(n => n.id), 0) + 1;
+                const newNews = {
+                    ...newsData,
+                    id: newId,
+                    date: new Date().toLocaleDateString('fa-IR'),
+                    views: 0
+                };
+                allNews.unshift(newNews);
+                localStorage.setItem(this.storageKey, JSON.stringify(allNews));
+                return newNews;
+            }
+            
+            updateNews(id, newsData) {
+                const allNews = this.getAllNews();
+                const index = allNews.findIndex(news => news.id === id);
+                if (index !== -1) {
+                    allNews[index] = { ...allNews[index], ...newsData };
+                    localStorage.setItem(this.storageKey, JSON.stringify(allNews));
+                    return allNews[index];
+                }
+                return null;
+            }
+            
+            deleteNews(id) {
+                const allNews = this.getAllNews();
+                const filteredNews = allNews.filter(news => news.id !== id);
+                localStorage.setItem(this.storageKey, JSON.stringify(filteredNews));
+            }
+            
+            getNewsById(id) {
+                const allNews = this.getAllNews();
+                return allNews.find(news => news.id === id);
+            }
+        }
+
+        // Initialize database
+        const db = new NewsDatabase();
+        let isAdminLoggedIn = false;
+        let isEditMode = false;
+        let currentCategory = 'all';
+        let currentMediaUploadType = 'image';
+        let currentLogoUploadType = 'file';
+        let currentPage = 'home';
+        
+        // Site customization data
+        let siteConfig = {
+            title: 'خبرگزاری آنلاین افغانستان',
+            subtitle: 'منبع معتبر اخبار روز کشور',
+            logo: '',
+            phone: '۰۹۳-۱۲۳۴۵۶۷۸',
+            email: 'info@afghanews.af',
+            address: 'کابل، افغانستان'
+        };
+
+        // Category names in Persian
+        const categoryNames = {
+            'political': 'سیاسی',
+            'economic': 'اقتصادی',
+            'sports': 'ورزشی',
+            'social': 'اجتماعی',
+            'multimedia': 'چند رسانه‌ای'
+        };
+
+        // Admin Panel Functions
+        function toggleAdminPanel() {
+            const panel = document.getElementById('adminPanel');
+            panel.classList.toggle('hidden');
+        }
+
+        function adminLogin() {
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            if (username === 'admin' && password === 'admin123') {
+                isAdminLoggedIn = true;
+                document.getElementById('adminLogin').classList.add('hidden');
+                document.getElementById('adminControls').classList.remove('hidden');
+                alert('ورود موفقیت‌آمیز بود');
+            } else {
+                alert('نام کاربری یا رمز عبور اشتباه است');
+            }
+        }
+
+        function adminLogout() {
+            isAdminLoggedIn = false;
+            isEditMode = false;
+            document.getElementById('adminLogin').classList.remove('hidden');
+            document.getElementById('adminControls').classList.add('hidden');
+            document.getElementById('adminUsername').value = '';
+            document.getElementById('adminPassword').value = '';
+            // Auto close admin panel on logout
+            document.getElementById('adminPanel').classList.add('hidden');
+            renderNews();
+        }
+
+        function toggleEditMode() {
+            if (!isAdminLoggedIn) return;
+            isEditMode = !isEditMode;
+            renderNews();
+        }
+
+        // Breaking News Functions
+        function showBreakingNewsModal() {
+            if (!isAdminLoggedIn) return;
+            document.getElementById('breakingNewsModal').classList.remove('hidden');
+            document.getElementById('breakingNewsModal').classList.add('flex');
+        }
+
+        function closeBreakingNewsModal() {
+            document.getElementById('breakingNewsModal').classList.add('hidden');
+            document.getElementById('breakingNewsModal').classList.remove('flex');
+        }
+
+        function showBreakingNews(text) {
+            document.getElementById('breakingNewsText').textContent = text;
+            document.getElementById('breakingNewsBar').classList.remove('hidden');
+        }
+
+        function hideBreakingNews() {
+            document.getElementById('breakingNewsBar').classList.add('hidden');
+            closeBreakingNewsModal();
+        }
+
+        // Breaking News Form Submission
+        document.getElementById('breakingNewsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!isAdminLoggedIn) return;
+            
+            const text = document.getElementById('breakingNewsInput').value;
+            if (text.trim()) {
+                showBreakingNews(text);
+                closeBreakingNewsModal();
+                document.getElementById('breakingNewsInput').value = '';
+            }
+        });
+
+        // Media Upload Functions
+        function toggleMediaUpload(type) {
+            currentMediaUploadType = type;
+            
+            // Reset button styles
+            document.getElementById('imageUploadBtn').className = 'px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-medium';
+            document.getElementById('videoUploadBtn').className = 'px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-medium';
+            document.getElementById('audioUploadBtn').className = 'px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-medium';
+            document.getElementById('urlUploadBtn').className = 'px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-medium';
+            
+            // Hide all sections
+            document.getElementById('imageUploadSection').classList.add('hidden');
+            document.getElementById('videoUploadSection').classList.add('hidden');
+            document.getElementById('audioUploadSection').classList.add('hidden');
+            document.getElementById('urlUploadSection').classList.add('hidden');
+            document.getElementById('mediaPreview').classList.add('hidden');
+            
+            if (type === 'image') {
+                document.getElementById('imageUploadBtn').className = 'px-6 py-3 bg-blue-100 text-blue-700 rounded-xl hover:bg-blue-200 transition-all font-medium';
+                document.getElementById('imageUploadSection').classList.remove('hidden');
+            } else if (type === 'video') {
+                document.getElementById('videoUploadBtn').className = 'px-6 py-3 bg-blue-100 text-blue-700 rounded-xl hover:bg-blue-200 transition-all font-medium';
+                document.getElementById('videoUploadSection').classList.remove('hidden');
+            } else if (type === 'audio') {
+                document.getElementById('audioUploadBtn').className = 'px-6 py-3 bg-blue-100 text-blue-700 rounded-xl hover:bg-blue-200 transition-all font-medium';
+                document.getElementById('audioUploadSection').classList.remove('hidden');
+            } else {
+                document.getElementById('urlUploadBtn').className = 'px-6 py-3 bg-blue-100 text-blue-700 rounded-xl hover:bg-blue-200 transition-all font-medium';
+                document.getElementById('urlUploadSection').classList.remove('hidden');
+            }
+        }
+        
+        // Logo Upload Functions
+        function toggleLogoUpload(type) {
+            currentLogoUploadType = type;
+            
+            // Reset button styles
+            document.getElementById('logoFileBtn').className = 'px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-medium';
+            document.getElementById('logoUrlBtn').className = 'px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-medium';
+            
+            // Hide all sections
+            document.getElementById('logoFileSection').classList.add('hidden');
+            document.getElementById('logoUrlSection').classList.add('hidden');
+            document.getElementById('logoPreview').classList.add('hidden');
+            
+            if (type === 'file') {
+                document.getElementById('logoFileBtn').className = 'px-6 py-3 bg-purple-100 text-purple-700 rounded-xl hover:bg-purple-200 transition-all font-medium';
+                document.getElementById('logoFileSection').classList.remove('hidden');
+            } else {
+                document.getElementById('logoUrlBtn').className = 'px-6 py-3 bg-purple-100 text-purple-700 rounded-xl hover:bg-purple-200 transition-all font-medium';
+                document.getElementById('logoUrlSection').classList.remove('hidden');
+            }
+        }
+
+        // Handle file upload and media preview
+        document.addEventListener('DOMContentLoaded', function() {
+            // Image file upload
+            document.getElementById('newsImageFile').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        showMediaPreview('image', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Video file upload
+            document.getElementById('newsVideoFile').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        showMediaPreview('video', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Audio file upload
+            document.getElementById('newsAudioFile').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        showMediaPreview('audio', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // URL input
+            document.getElementById('newsMediaUrl').addEventListener('input', function(e) {
+                const url = e.target.value;
+                if (url) {
+                    // Detect media type from URL
+                    if (url.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+                        showMediaPreview('image', url);
+                    } else if (url.match(/\.(mp4|webm|ogg)$/i)) {
+                        showMediaPreview('video', url);
+                    } else if (url.match(/\.(mp3|wav|ogg)$/i)) {
+                        showMediaPreview('audio', url);
+                    } else {
+                        showMediaPreview('image', url); // Default to image
+                    }
+                }
+            });
+
+            // Logo file upload
+            document.getElementById('logoFile').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        showLogoPreview(e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Logo URL input
+            document.getElementById('logoUrl').addEventListener('input', function(e) {
+                const url = e.target.value;
+                if (url) {
+                    showLogoPreview(url);
+                }
+            });
+
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                searchNews(searchTerm);
+            });
+        });
+
+        function showMediaPreview(type, src) {
+            const preview = document.getElementById('mediaPreview');
+            const img = document.getElementById('previewImg');
+            const video = document.getElementById('previewVideo');
+            const audio = document.getElementById('previewAudio');
+            
+            // Hide all previews first
+            img.classList.add('hidden');
+            video.classList.add('hidden');
+            audio.classList.add('hidden');
+            
+            if (type === 'image') {
+                img.src = src;
+                img.classList.remove('hidden');
+            } else if (type === 'video') {
+                video.src = src;
+                video.classList.remove('hidden');
+            } else if (type === 'audio') {
+                audio.src = src;
+                audio.classList.remove('hidden');
+            }
+            
+            preview.classList.remove('hidden');
+        }
+
+        function showLogoPreview(src) {
+            const preview = document.getElementById('logoPreview');
+            const img = document.getElementById('previewLogo');
+            img.src = src;
+            preview.classList.remove('hidden');
+        }
+
+        // News Management Functions
+        function showAddNewsModal() {
+            if (!isAdminLoggedIn) return;
+            
+            document.getElementById('modalTitle').textContent = 'افزودن خبر جدید';
+            document.getElementById('newsForm').reset();
+            document.getElementById('newsId').value = '';
+            
+            // Reset media preview and sections
+            document.getElementById('mediaPreview').classList.add('hidden');
+            document.getElementById('imageUploadSection').classList.add('hidden');
+            document.getElementById('videoUploadSection').classList.add('hidden');
+            document.getElementById('audioUploadSection').classList.add('hidden');
+            document.getElementById('urlUploadSection').classList.add('hidden');
+            
+            // Set default media type to image
+            toggleMediaUpload('image');
+            
+            // Show modal
+            document.getElementById('newsModal').classList.remove('hidden');
+            document.getElementById('newsModal').classList.add('flex');
+        }
+
+        function showEditNewsModal(id) {
+            if (!isAdminLoggedIn) return;
+            
+            const news = db.getNewsById(id);
+            if (!news) return;
+            
+            document.getElementById('modalTitle').textContent = 'ویرایش خبر';
+            document.getElementById('newsId').value = news.id;
+            document.getElementById('newsTitle').value = news.title;
+            document.getElementById('newsCategory').value = news.category;
+            document.getElementById('newsSummary').value = news.summary;
+            document.getElementById('newsContent').value = news.content;
+            
+            // Handle media
+            const mediaType = news.mediaType || 'image';
+            const mediaSrc = news.media || news.image;
+            
+            if (mediaSrc) {
+                if (mediaSrc.startsWith('data:')) {
+                    toggleMediaUpload(mediaType);
+                } else {
+                    toggleMediaUpload('url');
+                    document.getElementById('newsMediaUrl').value = mediaSrc;
+                }
+                showMediaPreview(mediaType, mediaSrc);
+            } else {
+                toggleMediaUpload('image');
+            }
+            
+            document.getElementById('newsModal').classList.remove('hidden');
+            document.getElementById('newsModal').classList.add('flex');
+        }
+
+        function closeNewsModal() {
+            document.getElementById('newsModal').classList.add('hidden');
+            document.getElementById('newsModal').classList.remove('flex');
+        }
+
+        function deleteNews(id) {
+            if (!isAdminLoggedIn) return;
+            
+            if (confirm('آیا از حذف این خبر اطمینان دارید؟')) {
+                db.deleteNews(id);
+                renderNews();
+            }
+        }
+
+        // News Form Submission
+        document.getElementById('newsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!isAdminLoggedIn) {
+                alert('لطفاً ابتدا وارد شوید');
+                return;
+            }
+            
+            const title = document.getElementById('newsTitle').value.trim();
+            const category = document.getElementById('newsCategory').value;
+            const summary = document.getElementById('newsSummary').value.trim();
+            const content = document.getElementById('newsContent').value.trim();
+            
+            if (!title || !summary || !content) {
+                alert('لطفاً تمام فیلدهای ضروری را پر کنید');
+                return;
+            }
+            
+            let mediaData = '';
+            let mediaType = currentMediaUploadType || 'image';
+            
+            // Handle file uploads
+            if (currentMediaUploadType === 'image') {
+                const fileInput = document.getElementById('newsImageFile');
+                if (fileInput && fileInput.files && fileInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        saveNewsWithMedia(e.target.result, 'image');
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                    return;
+                }
+            } else if (currentMediaUploadType === 'video') {
+                const fileInput = document.getElementById('newsVideoFile');
+                if (fileInput && fileInput.files && fileInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        saveNewsWithMedia(e.target.result, 'video');
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                    return;
+                }
+            } else if (currentMediaUploadType === 'audio') {
+                const fileInput = document.getElementById('newsAudioFile');
+                if (fileInput && fileInput.files && fileInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        saveNewsWithMedia(e.target.result, 'audio');
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                    return;
+                }
+            } else if (currentMediaUploadType === 'url') {
+                const urlInput = document.getElementById('newsMediaUrl');
+                if (urlInput && urlInput.value.trim()) {
+                    mediaData = urlInput.value.trim();
+                    // Detect media type from URL
+                    if (mediaData.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+                        mediaType = 'image';
+                    } else if (mediaData.match(/\.(mp4|webm|ogg)$/i)) {
+                        mediaType = 'video';
+                    } else if (mediaData.match(/\.(mp3|wav|ogg)$/i)) {
+                        mediaType = 'audio';
+                    } else {
+                        mediaType = 'image'; // Default to image
+                    }
+                }
+            }
+            
+            // Save news (with or without media)
+            saveNewsWithMedia(mediaData, mediaType);
+        });
+
+        function saveNewsWithMedia(mediaData, mediaType) {
+            try {
+                const newsData = {
+                    title: document.getElementById('newsTitle').value.trim(),
+                    category: document.getElementById('newsCategory').value,
+                    summary: document.getElementById('newsSummary').value.trim(),
+                    content: document.getElementById('newsContent').value.trim(),
+                    media: mediaData || '',
+                    mediaType: mediaType || 'image',
+                    // Keep backward compatibility
+                    image: (mediaType === 'image' && mediaData) ? mediaData : ''
+                };
+                
+                const newsId = document.getElementById('newsId').value;
+                
+                if (newsId && newsId.trim()) {
+                    // Update existing news
+                    const result = db.updateNews(parseInt(newsId), newsData);
+                    if (result) {
+                        alert('خبر با موفقیت به‌روزرسانی شد');
+                    } else {
+                        alert('خطا در به‌روزرسانی خبر');
+                        return;
+                    }
+                } else {
+                    // Add new news
+                    const result = db.addNews(newsData);
+                    if (result) {
+                        alert('خبر جدید با موفقیت اضافه شد');
+                    } else {
+                        alert('خطا در افزودن خبر');
+                        return;
+                    }
+                }
+                
+                closeNewsModal();
+                renderNews();
+                
+            } catch (error) {
+                console.error('Error saving news:', error);
+                alert('خطا در ذخیره خبر: ' + error.message);
+            }
+        }
+
+        // News Display Functions
+        function renderNews() {
+            const container = document.getElementById('newsContainer');
+            const emptyState = document.getElementById('emptyState');
+            const news = db.getNewsByCategory(currentCategory);
+            
+            if (news.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            
+            renderNewsItems(news, container);
+        }
+
+        function showCategory(category) {
+            currentCategory = category;
+            
+            // Update active category button
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderNews();
+        }
+
+        function showNewsDetail(id) {
+            const news = db.getNewsById(id);
+            if (!news) return;
+            
+            // Increment view count
+            news.views++;
+            db.updateNews(id, { views: news.views });
+            
+            document.getElementById('detailTitle').textContent = news.title;
+            document.getElementById('detailCategory').textContent = categoryNames[news.category];
+            document.getElementById('detailDate').textContent = news.date;
+            document.getElementById('detailViews').textContent = `${news.views} بازدید`;
+            document.getElementById('detailContent').innerHTML = news.content.replace(/\n/g, '<br>');
+            
+            // Show image if exists
+            const imageContainer = document.getElementById('detailImageContainer');
+            const detailImage = document.getElementById('detailImage');
+            if (news.image) {
+                detailImage.src = news.image;
+                detailImage.alt = news.title;
+                imageContainer.classList.remove('hidden');
+            } else {
+                imageContainer.classList.add('hidden');
+            }
+            
+            document.getElementById('newsDetailModal').classList.remove('hidden');
+            document.getElementById('newsDetailModal').classList.add('flex');
+            
+            renderNews(); // Update view count in the list
+        }
+
+        function closeDetailModal() {
+            document.getElementById('newsDetailModal').classList.add('hidden');
+            document.getElementById('newsDetailModal').classList.remove('flex');
+        }
+
+        function shareNews(platform) {
+            const title = document.getElementById('detailTitle').textContent;
+            const url = window.location.href;
+            
+            let shareUrl = '';
+            switch(platform) {
+                case 'telegram':
+                    shareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`;
+                    break;
+                case 'whatsapp':
+                    shareUrl = `https://wa.me/?text=${encodeURIComponent(title + ' ' + url)}`;
+                    break;
+                case 'twitter':
+                    shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+                    break;
+            }
+            
+            if (shareUrl) {
+                window.open(shareUrl, '_blank');
+            }
+        }
+
+        // Page Navigation Functions
+        function showPage(page) {
+            currentPage = page;
+            const mainContent = document.querySelector('main');
+            
+            if (page === 'home') {
+                mainContent.innerHTML = `
+                    <!-- Category Filters -->
+                    <div class="flex flex-wrap justify-center gap-4 mb-12">
+                        <button onclick="showCategory('all')" class="category-btn active px-8 py-3 rounded-full border-2 border-purple-200 hover:bg-purple-50 transition-all font-medium shadow-lg">همه اخبار</button>
+                        <button onclick="showCategory('political')" class="category-btn px-8 py-3 rounded-full border-2 border-purple-200 hover:bg-purple-50 transition-all font-medium shadow-lg">سیاسی</button>
+                        <button onclick="showCategory('economic')" class="category-btn px-8 py-3 rounded-full border-2 border-purple-200 hover:bg-purple-50 transition-all font-medium shadow-lg">اقتصادی</button>
+                        <button onclick="showCategory('sports')" class="category-btn px-8 py-3 rounded-full border-2 border-purple-200 hover:bg-purple-50 transition-all font-medium shadow-lg">ورزشی</button>
+                        <button onclick="showCategory('social')" class="category-btn px-8 py-3 rounded-full border-2 border-purple-200 hover:bg-purple-50 transition-all font-medium shadow-lg">اجتماعی</button>
+                        <button onclick="showCategory('multimedia')" class="category-btn px-8 py-3 rounded-full border-2 border-purple-200 hover:bg-purple-50 transition-all font-medium shadow-lg">چند رسانه‌ای</button>
+                    </div>
+                    <div id="newsContainer" class="news-grid"></div>
+                    <div id="emptyState" class="text-center py-16">
+                        <div class="max-w-md mx-auto">
+                            <svg class="w-24 h-24 mx-auto text-gray-300 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                            </svg>
+                            <h3 class="text-xl font-semibold text-gray-600 mb-3">هنوز خبری منتشر نشده است</h3>
+                            <p class="text-gray-500">اولین خبر را از طریق پنل مدیریت اضافه کنید</p>
+                        </div>
+                    </div>
+                `;
+                renderNews();
+            } else if (page === 'about') {
+                mainContent.innerHTML = `
+                    <div class="max-w-4xl mx-auto">
+                        <h2 class="text-4xl font-bold gradient-text text-center mb-12">درباره ما</h2>
+                        <div class="bg-white rounded-2xl shadow-xl p-12 border border-blue-100">
+                            <p class="text-lg text-gray-700 leading-relaxed mb-8">
+                                خبرگزاری آنلاین افغانستان با هدف ارائه اخبار دقیق، بی‌طرفانه و به‌روز از تمامی حوزه‌های مهم کشور فعالیت می‌کند. ما متعهد به حفظ استانداردهای بالای روزنامه‌نگاری و ارائه اطلاعات معتبر به مردم عزیز افغانستان هستیم.
+                            </p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl">
+                                    <h3 class="text-xl font-semibold text-blue-800 mb-4">ماموریت ما</h3>
+                                    <p class="text-gray-700">ارائه اخبار دقیق و بی‌طرفانه از تمامی رویدادهای مهم کشور و منطقه</p>
+                                </div>
+                                <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl">
+                                    <h3 class="text-xl font-semibold text-green-800 mb-4">چشم‌انداز ما</h3>
+                                    <p class="text-gray-700">تبدیل شدن به منبع اصلی و معتبر اطلاعات برای مردم افغانستان</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (page === 'contact') {
+                mainContent.innerHTML = `
+                    <div class="max-w-4xl mx-auto">
+                        <h2 class="text-4xl font-bold gradient-text text-center mb-12">تماس با ما</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="bg-white rounded-2xl shadow-xl p-8 border border-blue-100">
+                                <h3 class="text-2xl font-semibold text-gray-800 mb-6">اطلاعات تماس</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center">
+                                        <svg class="w-6 h-6 text-blue-600 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                        </svg>
+                                        <span class="text-gray-700" id="contactPagePhone">${siteConfig.phone}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <svg class="w-6 h-6 text-blue-600 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                        </svg>
+                                        <span class="text-gray-700" id="contactPageEmail">${siteConfig.email}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <svg class="w-6 h-6 text-blue-600 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        </svg>
+                                        <span class="text-gray-700" id="contactPageAddress">${siteConfig.address}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-2xl shadow-xl p-8 border border-blue-100">
+                                <h3 class="text-2xl font-semibold text-gray-800 mb-6">پیام خود را ارسال کنید</h3>
+                                <form class="space-y-4">
+                                    <input type="text" placeholder="نام شما" class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <input type="email" placeholder="ایمیل شما" class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <textarea rows="4" placeholder="پیام شما" class="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                                    <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium shadow-lg">ارسال پیام</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Customization Functions
+        function showCustomizationModal() {
+            if (!isAdminLoggedIn) return;
+            
+            // Load current values
+            document.getElementById('siteTitleInput').value = siteConfig.title;
+            document.getElementById('siteSubtitleInput').value = siteConfig.subtitle;
+            document.getElementById('contactPhone').value = siteConfig.phone;
+            document.getElementById('contactEmail').value = siteConfig.email;
+            document.getElementById('contactAddress').value = siteConfig.address;
+            
+            toggleLogoUpload('file');
+            document.getElementById('customizationModal').classList.remove('hidden');
+            document.getElementById('customizationModal').classList.add('flex');
+        }
+        
+        function closeCustomizationModal() {
+            document.getElementById('customizationModal').classList.add('hidden');
+            document.getElementById('customizationModal').classList.remove('flex');
+        }
+
+        // Customization Form Submission
+        document.getElementById('customizationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!isAdminLoggedIn) return;
+            
+            // Update site config
+            siteConfig.title = document.getElementById('siteTitleInput').value || siteConfig.title;
+            siteConfig.subtitle = document.getElementById('siteSubtitleInput').value || siteConfig.subtitle;
+            siteConfig.phone = document.getElementById('contactPhone').value || siteConfig.phone;
+            siteConfig.email = document.getElementById('contactEmail').value || siteConfig.email;
+            siteConfig.address = document.getElementById('contactAddress').value || siteConfig.address;
+            
+            // Handle logo
+            if (currentLogoUploadType === 'file') {
+                const fileInput = document.getElementById('logoFile');
+                if (fileInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        siteConfig.logo = e.target.result;
+                        applySiteCustomization();
+                        saveSiteConfig();
+                        closeCustomizationModal();
+                        alert('تغییرات با موفقیت ذخیره شد');
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                    return;
+                }
+            } else {
+                const logoUrl = document.getElementById('logoUrl').value;
+                if (logoUrl) {
+                    siteConfig.logo = logoUrl;
+                }
+            }
+            
+            applySiteCustomization();
+            saveSiteConfig();
+            closeCustomizationModal();
+            alert('تغییرات با موفقیت ذخیره شد');
+        });
+
+        function saveSiteConfig() {
+            localStorage.setItem('siteConfig', JSON.stringify(siteConfig));
+        }
+
+        function loadSiteConfig() {
+            const saved = localStorage.getItem('siteConfig');
+            if (saved) {
+                siteConfig = { ...siteConfig, ...JSON.parse(saved) };
+            }
+        }
+        
+        function applySiteCustomization() {
+            document.getElementById('siteTitle').textContent = siteConfig.title;
+            document.getElementById('siteSubtitle').textContent = siteConfig.subtitle;
+            
+            if (siteConfig.logo) {
+                document.getElementById('siteLogo').src = siteConfig.logo;
+                document.getElementById('logoContainer').classList.remove('hidden');
+            } else {
+                document.getElementById('logoContainer').classList.add('hidden');
+            }
+            
+            // Update contact page if it exists
+            const contactPagePhone = document.getElementById('contactPagePhone');
+            const contactPageEmail = document.getElementById('contactPageEmail');
+            const contactPageAddress = document.getElementById('contactPageAddress');
+            
+            if (contactPagePhone) contactPagePhone.textContent = siteConfig.phone;
+            if (contactPageEmail) contactPageEmail.textContent = siteConfig.email;
+            if (contactPageAddress) contactPageAddress.textContent = siteConfig.address;
+        }
+
+        // Search functionality
+        function searchNews(searchTerm) {
+            if (!searchTerm.trim()) {
+                renderNews();
+                return;
+            }
+            
+            const allNews = db.getAllNews();
+            const filteredNews = allNews.filter(news => 
+                news.title.toLowerCase().includes(searchTerm) ||
+                news.summary.toLowerCase().includes(searchTerm) ||
+                news.content.toLowerCase().includes(searchTerm) ||
+                categoryNames[news.category].toLowerCase().includes(searchTerm)
+            );
+            
+            const container = document.getElementById('newsContainer');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (filteredNews.length === 0) {
+                container.innerHTML = '';
+                emptyState.innerHTML = `
+                    <div class="max-w-md mx-auto">
+                        <svg class="w-24 h-24 mx-auto text-gray-300 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <h3 class="text-xl font-semibold text-gray-600 mb-3">نتیجه‌ای یافت نشد</h3>
+                        <p class="text-gray-500">برای "${searchTerm}" خبری پیدا نشد</p>
+                    </div>
+                `;
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            renderNewsItems(filteredNews, container);
+        }
+
+        function renderNewsItems(newsItems, container) {
+            container.innerHTML = newsItems.map((item, index) => {
+                let mediaHtml = '';
+                if (item.media || item.image) {
+                    const mediaType = item.mediaType || 'image';
+                    const mediaSrc = item.media || item.image;
+                    
+                    if (mediaType === 'image') {
+                        mediaHtml = `
+                            <div class="h-48 overflow-hidden">
+                                <img src="${mediaSrc}" alt="${item.title}" class="news-image w-full h-full object-cover">
+                            </div>
+                        `;
+                    } else if (mediaType === 'video') {
+                        mediaHtml = `
+                            <div class="h-48 overflow-hidden bg-black flex items-center justify-center">
+                                <video src="${mediaSrc}" class="w-full h-full object-contain" controls preload="metadata">
+                                    <source src="${mediaSrc}" type="video/mp4">
+                                    مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
+                                </video>
+                            </div>
+                        `;
+                    } else if (mediaType === 'audio') {
+                        mediaHtml = `
+                            <div class="p-4 bg-gray-50">
+                                <audio src="${mediaSrc}" class="w-full" controls></audio>
+                            </div>
+                        `;
+                    }
+                }
+                
+                return `
+                    <article class="news-card bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100" style="animation-delay: ${index * 0.1}s">
+                        ${mediaHtml}
+                        
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 px-4 py-2 rounded-full text-sm font-medium">
+                                    ${categoryNames[item.category]}
+                                </span>
+                                <span class="text-gray-500 text-sm font-medium">${item.date}</span>
+                            </div>
+                            
+                            <h2 class="text-xl font-bold text-gray-800 mb-4 hover:text-blue-600 cursor-pointer transition-colors leading-relaxed" onclick="showNewsDetail(${item.id})">
+                                ${item.title}
+                            </h2>
+                            
+                            <p class="text-gray-600 mb-6 leading-relaxed">
+                                ${item.summary}
+                            </p>
+                            
+                            <div class="flex items-center justify-between">
+                                <button onclick="showNewsDetail(${item.id})" class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-medium shadow-lg">
+                                    ادامه مطلب
+                                </button>
+                                <span class="text-gray-400 text-sm font-medium">${item.views} بازدید</span>
+                            </div>
+                            
+                            ${isEditMode ? `
+                                <div class="mt-6 pt-4 border-t border-gray-200 flex gap-3">
+                                    <button onclick="showEditNewsModal(${item.id})" class="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-4 py-2 rounded-xl text-sm hover:from-yellow-600 hover:to-yellow-700 transition-all shadow-lg">
+                                        ویرایش
+                                    </button>
+                                    <button onclick="deleteNews(${item.id})" class="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-xl text-sm hover:from-red-600 hover:to-red-700 transition-all shadow-lg">
+                                        حذف
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        // Initialize the website
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSiteConfig();
+            applySiteCustomization();
+            renderNews();
+        });
+
+        // Close modals when clicking outside
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                closeNewsModal();
+                closeDetailModal();
+                closeBreakingNewsModal();
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'979fe0239733f9e9',t:'MTc1NzAxMzk1NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
